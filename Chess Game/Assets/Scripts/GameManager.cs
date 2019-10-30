@@ -3,168 +3,160 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+namespace ChessGame
 {
-    [SerializeField] GameObject lightTile = null;
-    [SerializeField] GameObject darkTile = null;
-    [SerializeField] RectTransform board = null;
-    [SerializeField] GameObject piece = null;
-
-    [SerializeField] List<Sprite> whitePieces = null;
-    [SerializeField] List<Sprite> blackPieces = null;
-    //[SerializeField] Sprite whitePawn = null;
-    //[SerializeField] Sprite darkPawn = null;
-
-    //[SerializeField] Sprite whiteKing = null;
-    //[SerializeField] Sprite whiteQueen = null;
-    //[SerializeField] Sprite whiteBishop = null;
-    //[SerializeField] Sprite whiteKnight = null;
-    //[SerializeField] Sprite whiteRook = null;
-
-    //[SerializeField] Sprite darkKing = null;
-    //[SerializeField] Sprite darkQueen = null;
-    //[SerializeField] Sprite darkBishop = null;
-    //[SerializeField] Sprite darkKnight = null;
-    //[SerializeField] Sprite darkRook = null;
-
-    GameObject currentTile;
-    float offset;
-    int numberOfRowColumn = 8;
-
-    List<GameObject> boardTiles;
-    Dictionary<string, Sprite> whitePiecesDict = new Dictionary<string, Sprite>();
-    Dictionary<string, Sprite> blackPiecesDict = new Dictionary<string, Sprite>();
-
-    private void Awake()
+    public class GameManager : MonoBehaviour
     {
-        offset = lightTile.GetComponent<RectTransform>().rect.height;
-        boardTiles = new List<GameObject>();
+        [SerializeField] GameObject lightTile = null;
+        [SerializeField] GameObject darkTile = null;
+        [SerializeField] RectTransform board = null;
+        //[SerializeField] GameObject piece = null;
 
-    }
+        [SerializeField] List<GameObject> whitePieces = null;
+        [SerializeField] List<GameObject> blackPieces = null;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        CreateBoard();
-        SortPieces(whitePieces, whitePiecesDict);
-        SortPieces(blackPieces, blackPiecesDict);
-        SetupPiece();
-    }
+        GameObject currentTile;
+        float offset;
+        int numberOfRowColumn = 8;
 
-    private void CreateBoard()
-    {
-        for(int y=0; y<numberOfRowColumn; y++)
+        List<GameObject> boardTiles;
+        //Dictionary<Vector3, GameObject> cells = new Dictionary<Vector3, GameObject>();//cells
+        TileManager tileManager;
+
+        Dictionary<string, GameObject> whitePiecesDict = new Dictionary<string, GameObject>();
+        Dictionary<string, GameObject> blackPiecesDict = new Dictionary<string, GameObject>();
+
+        private void Awake()
         {
-            for(int x=0; x<numberOfRowColumn; x++)
+            offset = lightTile.GetComponent<RectTransform>().rect.height;
+            boardTiles = new List<GameObject>();
+            tileManager = FindObjectOfType<TileManager>();
+
+        }
+
+        // Start is called before the first frame update
+        void Start()
+        {
+            CreateBoard();
+            SortPieces(whitePieces, whitePiecesDict);
+            SortPieces(blackPieces, blackPiecesDict);
+            SetupPiece();
+        }
+
+        private void CreateBoard()
+        {
+            for (int y = 0; y < numberOfRowColumn; y++)
             {
-                if ((x + y) % 2 == 0)
+                for (int x = 0; x < numberOfRowColumn; x++)
                 {
-                    currentTile = darkTile;
+                    if ((x + y) % 2 == 0)
+                    {
+                        currentTile = darkTile;
+                    }
+                    else
+                    {
+                        currentTile = lightTile;
+                    }
+
+                    Vector3 spawnPosition = new Vector3(board.position.x + offset * x, board.position.y + offset * y);
+                    GameObject boardTile = Instantiate(currentTile, spawnPosition, Quaternion.identity, board);
+
+                    boardTiles.Add(boardTile);
+                    tileManager.AddTile(spawnPosition, boardTile);
+                    //cells.Add(spawnPosition, boardTile);
                 }
-                else
+            }
+        }
+
+        private void SetupPiece()
+        {
+            Vector3[] tilePositions = tileManager.GetTilePositions();
+
+            for (int i=0; i<2*numberOfRowColumn; i++)
+            {
+                InstallPiecesOnBoard(i, whitePiecesDict, tilePositions[i]);
+                tileManager.SetTileTaken(tilePositions[i]);
+            }
+          
+
+            for (int i = 0; i < numberOfRowColumn; i++)
+            {
+                InstallPiecesOnBoard(i, blackPiecesDict, tilePositions[tilePositions.Length - numberOfRowColumn + i]);
+                tileManager.SetTileTaken(tilePositions[tilePositions.Length - numberOfRowColumn + i]);
+            }
+
+            for (int i = 0; i < numberOfRowColumn; i++)
+            {
+                InstallPiecesOnBoard(i + numberOfRowColumn, blackPiecesDict,
+                    tilePositions[tilePositions.Length - 2*numberOfRowColumn + i]);
+                tileManager.SetTileTaken(tilePositions[tilePositions.Length - 2 * numberOfRowColumn + i]);
+            }
+        }
+
+        private void InstallPiecesOnBoard(int positionIndex, Dictionary<string, GameObject> pieceDict, Vector3 installPos)
+        {
+            switch (positionIndex)
+            {
+                case 0:
+                case 7:
+                    Instantiate(pieceDict["Rook"], installPos, Quaternion.identity, board);
+                    break;
+                case 1:
+                case 6:
+                    Instantiate(pieceDict["Knight"], installPos, Quaternion.identity, board);
+                    break;
+                case 2:
+                case 5:
+                    Instantiate(pieceDict["Bishop"], installPos, Quaternion.identity, board);
+                    break;
+                case 3:
+                    Instantiate(pieceDict["Queen"], installPos, Quaternion.identity, board);
+                    break;
+                case 4:
+                    Instantiate(pieceDict["King"], installPos, Quaternion.identity, board);
+                    break;
+                default:
+                    Instantiate(pieceDict["Pawn"], installPos, Quaternion.identity, board);
+                    break;
+            }
+        }
+
+        private void SortPieces(List<GameObject> listOfPieces, Dictionary<string, GameObject> sortedList)
+        {
+            foreach (GameObject obj in listOfPieces)
+            {
+                string name = obj.name;
+
+                if (name.Contains("Pawn"))
                 {
-                    currentTile = lightTile;
+                    sortedList.Add("Pawn", obj);
                 }
-
-                GameObject boardTile = Instantiate(currentTile, new Vector3(board.position.x + offset * x,
-                    board.position.y + offset * y, 0),
-                    Quaternion.identity, board);
-
-                boardTiles.Add(boardTile);
+                else if (name.Contains("King"))
+                {
+                    sortedList.Add("King", obj);
+                }
+                else if (name.Contains("Queen"))
+                {
+                    sortedList.Add("Queen", obj);
+                }
+                else if (name.Contains("Bishop"))
+                {
+                    sortedList.Add("Bishop", obj);
+                }
+                else if (name.Contains("Rook"))
+                {
+                    sortedList.Add("Rook", obj);
+                }
+                else if (name.Contains("Knight"))
+                {
+                    sortedList.Add("Knight", obj);
+                }
             }
         }
-    }
 
-    private void SetupPiece()
-    {
-        for (int i = 0; i < 2 * numberOfRowColumn; i++)
-        {
-            InstallPiecesOnBoard(i, whitePiecesDict, boardTiles[i].transform.position);
-        }
-
-        for (int i = 0; i < numberOfRowColumn; i++)
-        {
-            InstallPiecesOnBoard(i, blackPiecesDict, boardTiles[boardTiles.Count-numberOfRowColumn+i].transform.position);
-        }
-
-        for (int i = 0; i < numberOfRowColumn; i++)
-        {
-            InstallPiecesOnBoard(i+numberOfRowColumn, blackPiecesDict, boardTiles[boardTiles.Count - 2*numberOfRowColumn + i].transform.position);
-        }
-
-        //int blackPieceSpawnIndex;
-        //if (i < numberOfRowColumn)
+        //public Dictionary<Vector3, GameObject> GetCells()
         //{
-        //    blackPieceSpawnIndex = boardTiles.Count - numberOfRowColumn + i;
+        //    return cells;
         //}
-        //else
-        //{
-        //    blackPieceSpawnIndex = boardTiles.Count - numberOfRowColumn - i;
-        //}
-        //InstallPiecesOnBoard(i, blackPiecesDict, boardTiles[blackPieceSpawnIndex].transform.position);
-
-
-    }
-
-    private void InstallPiecesOnBoard(int positionIndex, Dictionary<string, Sprite> pieceDict, Vector3 installPos)
-    {
-        GameObject chessPiece = Instantiate(piece, installPos, Quaternion.identity, board);
-        switch (positionIndex)
-        {
-            case 0:
-            case 7:
-                chessPiece.GetComponent<Image>().sprite = pieceDict["Rook"];
-                break;
-            case 1:
-            case 6:
-                chessPiece.GetComponent<Image>().sprite = pieceDict["Knight"];
-                break;
-            case 2:
-            case 5:
-                chessPiece.GetComponent<Image>().sprite = pieceDict["Bishop"];
-                break;
-            case 3:
-                chessPiece.GetComponent<Image>().sprite = pieceDict["Queen"];
-                break;
-            case 4:
-                chessPiece.GetComponent<Image>().sprite = pieceDict["King"];
-                break;
-            default:
-                chessPiece.GetComponent<Image>().sprite = pieceDict["Pawn"];
-                break;
-        }
-    }
-
-    private void SortPieces(List<Sprite> listOfPieces, Dictionary<string, Sprite> sortedList)
-    {
-        foreach (Sprite sprite in listOfPieces)
-        {
-            string name = sprite.name;
-            
-            if(name.Contains("Pawn"))
-            {
-                sortedList.Add("Pawn", sprite);
-            }
-            else if (name.Contains("King"))
-            {
-                sortedList.Add("King", sprite);
-            }
-            else if (name.Contains("Queen"))
-            {
-                sortedList.Add("Queen", sprite);
-            }
-            else if (name.Contains("Bishop"))
-            {
-                sortedList.Add("Bishop", sprite);
-            }
-            else if (name.Contains("Rook"))
-            {
-                sortedList.Add("Rook", sprite);
-            }
-            else if (name.Contains("Knight"))
-            {
-                sortedList.Add("Knight", sprite);
-            }
-        }
     }
 }
