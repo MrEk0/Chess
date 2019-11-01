@@ -19,28 +19,20 @@ namespace ChessGame
             new Vector2Int(1,0),
        };
 
-        //public override void OnPointerClick(PointerEventData eventData)
-        //{
-        //    TileManager.instance.SelectPiece(gameObject);
-        //    ShowPossibleSteps();
-        //}
-
         public override void ShowPossibleSteps()
         {
             for (int i = 0; i < moveVectors.Length; i++)
             {
                 GameObject tile = TileManager.instance.GetStepTile(transform.position, moveVectors[i]);
-                CheckAttackSteps(tile);
+                if (tile != null)
+                {
+                    CheckAttackSteps(tile);
+                }
             }
         }
 
         public override void CheckAttackSteps(GameObject tile)
         {
-            if (!TileManager.instance.IsTileExist(tile))
-            {
-                return;
-            }
-
             if (TileManager.instance.IsTileTaken(tile))
             {
                 if (TileManager.instance.IsPieceTheSameSide(tile, colorType))

@@ -29,6 +29,12 @@ namespace ChessGame
             for(int i=0; i<moveVectors.Length; i++)
             {
                 GameObject tile = TileManager.instance.GetStepTile(transform.position, moveVectors[i]);
+
+                if(tile==null)
+                {
+                    return;
+                }
+
                 if(i==0 || i==2)
                 {
                     CheckAttackSteps(tile);
@@ -59,11 +65,6 @@ namespace ChessGame
 
         private void CheckForwardSteps(GameObject tile)
         {
-            if(!TileManager.instance.IsTileExist(tile))
-            {
-                return;
-            }
-
             if (!TileManager.instance.IsTileTaken(tile))
             {
                 TileManager.instance.ChangeTileColor(tile, Color.cyan);
@@ -73,11 +74,6 @@ namespace ChessGame
 
         public override void CheckAttackSteps(GameObject tile)
         {
-            if (!TileManager.instance.IsTileExist(tile))
-            {
-                return;
-            }
-
             if (TileManager.instance.IsTileTaken(tile))
             {
                 if(TileManager.instance.IsPieceTheSameSide(tile, colorType))
@@ -89,21 +85,5 @@ namespace ChessGame
                 TileManager.instance.AddTileToMove(tile);
             }
         }
-
-        //public override void OnPointerClick(PointerEventData eventData)
-        //{
-        //    //isSelected = !isSelected;
-        //    if (TileManager.instance.NextTurnColor==colorType)
-        //    {
-        //        //if it is not the same side
-        //        TileManager.instance.SelectPiece(gameObject);
-        //        ShowPossibleSteps();
-        //    }
-        //    //else
-        //    //{
-        //    //    TileManager.instance.ClearMoveTiles();
-        //    //}
-        //}
-  
     }
 }

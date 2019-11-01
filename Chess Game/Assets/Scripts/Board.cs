@@ -5,20 +5,20 @@ using UnityEngine.UI;
 
 namespace ChessGame
 {
-    public class GameManager : MonoBehaviour
+    public class Board : MonoBehaviour
     {
         [SerializeField] GameObject lightTile = null;
         [SerializeField] GameObject darkTile = null;
         [SerializeField] RectTransform board = null;
-        //[SerializeField] GameObject piece = null;
+
         [Header("White Pieces")]
-        //[SerializeField] List<GameObject> whitePieces = null;
         [SerializeField] GameObject w_KingPrefab = null;
         [SerializeField] GameObject w_QueenPrefab = null;
         [SerializeField] GameObject w_BishopPrefab = null;
         [SerializeField] GameObject w_KnightPrefab = null;
         [SerializeField] GameObject w_RookPrefab = null;
         [SerializeField] GameObject w_PawnPrefab = null;
+
         [Header("Black Pieces")]
         [SerializeField] GameObject b_KingPrefab = null;
         [SerializeField] GameObject b_QueenPrefab = null;
@@ -31,14 +31,12 @@ namespace ChessGame
         float offset;
         int numberOfRowsAndColumns = 8;
 
-        //Dictionary<int, int> columnsAndRows = new Dictionary<int, int>();
-        //Dictionary<Dictionary<int, int>, Vector3> columnsPositions = new Dictionary<Dictionary<int, int>, Vector3>();
-
-        private List<Vector3> spawnPositions = new List<Vector3>();
+        private List<Vector3> spawnPositions;
 
         private void Awake()
         {
             offset = lightTile.GetComponent<RectTransform>().rect.height;
+            spawnPositions = new List<Vector3>();
         }
 
         // Start is called before the first frame update
@@ -48,7 +46,7 @@ namespace ChessGame
             SetupPiece();
         }
 
-        private void CreateBoard()//ok
+        private void CreateBoard()
         {
             for (int y = 0; y < numberOfRowsAndColumns; y++)
             {
@@ -76,8 +74,7 @@ namespace ChessGame
         {
             for (int i = 0; i < 2 * numberOfRowsAndColumns; i++)
             {
-                //TileManager.instance.AddTakenTile(spawnPositions[i]);//old
-                TileManager.instance.AddTileTaken(spawnPositions[i], PieceColor.White);
+                TileManager.instance.AddTakenTile(spawnPositions[i], PieceColor.White);
 
                 switch (i)
                 {
@@ -109,8 +106,7 @@ namespace ChessGame
 
             for (int i = startNumberForBlack; i < spawnPositions.Count; i++)
             {
-                //TileManager.instance.AddTakenTile(spawnPositions[i]);//old
-                TileManager.instance.AddTileTaken(spawnPositions[i], PieceColor.Black);
+                TileManager.instance.AddTakenTile(spawnPositions[i], PieceColor.Black);
 
                 switch (i)
                 {

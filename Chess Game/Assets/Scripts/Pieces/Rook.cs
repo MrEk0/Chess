@@ -18,12 +18,6 @@ namespace ChessGame
 
         private bool isPreviousTileTaken = false;
 
-        //public override void OnPointerClick(PointerEventData eventData)
-        //{
-        //    TileManager.instance.SelectPiece(gameObject);
-        //    ShowPossibleSteps();
-        //}
-
         public override void ShowPossibleSteps()
         {
             for (int i = 0; i < moveVectors.Length; i++)
@@ -31,7 +25,11 @@ namespace ChessGame
                 for (int j = 1; j < 9; j++)
                 {
                     GameObject tile = TileManager.instance.GetStepTile(transform.position, moveVectors[i]*j);
-                    CheckAttackSteps(tile);
+
+                    if (tile != null)
+                    {
+                        CheckAttackSteps(tile);
+                    }                    
                 }
                 isPreviousTileTaken = false;
             }
@@ -39,11 +37,6 @@ namespace ChessGame
 
         public override void CheckAttackSteps(GameObject tile)
         {
-            if (!TileManager.instance.IsTileExist(tile))
-            {
-                return;
-            }
-
             if (!isPreviousTileTaken)
             {
                 if (TileManager.instance.IsTileTaken(tile))

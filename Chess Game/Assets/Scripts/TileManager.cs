@@ -13,17 +13,12 @@ namespace ChessGame
         [SerializeField] GameObject tilePrefab = null;
 
         Dictionary<Vector3, GameObject> tiles = new Dictionary<Vector3, GameObject>();
-
-        List<GameObject> tilesToMove;
         Dictionary<GameObject, PieceColor> takenTilesDict = new Dictionary<GameObject, PieceColor>();
-
+        List<GameObject> tilesToMove;     
         GameObject selectedPiece;
-        //GameObject previousSelectedPiece;
-        //PieceColor nextTurnColor;
 
         float height;
 
-        //public bool IsPlayerTurned { get; set; } = true;
         public PieceColor NextTurnColor { get; set; } = PieceColor.White;
 
         private void Awake()
@@ -32,8 +27,6 @@ namespace ChessGame
 
             height = tilePrefab.GetComponent<RectTransform>().rect.height;
             tilesToMove = new List<GameObject>();
-
-            //nextTurnColor = PieceColor.White;
         }
 
         public void AddTile(Vector3 position, GameObject tile)
@@ -41,18 +34,13 @@ namespace ChessGame
             tiles.Add(position, tile);
         }
 
-        public void AddTileTaken(Vector3 position, PieceColor pieceColor)
+        public void AddTakenTile(Vector3 position, PieceColor pieceColor)
         {
             GameObject tile = tiles[position];
             takenTilesDict.Add(tile, pieceColor);
         }
 
-        public Vector3[] GetTilePositions()
-        {
-            return tiles.Keys.ToArray();
-        }
-
-        public bool IsTileTaken(GameObject tile)//new important
+        public bool IsTileTaken(GameObject tile)
         {
             if(takenTilesDict.ContainsKey(tile))
             {
@@ -62,16 +50,7 @@ namespace ChessGame
             return false;
         }
 
-        public bool IsTileExist(GameObject tile)//new
-        {
-            if (tiles.ContainsValue(tile))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public GameObject GetStepTile(Vector3 position, Vector2Int step)//new important
+        public GameObject GetStepTile(Vector3 position, Vector2Int step)
         {
             Vector3 stepPos = new Vector3(position.x + height * step.x, position.y + height * step.y);
             if (tiles.ContainsKey(stepPos))
@@ -83,12 +62,16 @@ namespace ChessGame
             return null;
         }
 
-        public void AddTileToMove(GameObject tile)//new
+        public void AddTileToMove(GameObject tile)
         {
             tilesToMove.Add(tile);
         }
+        public void ChangeTileColor(GameObject tile, Color color)
+        {
+            tile.GetComponent<Image>().color = color;
+        }
 
-        public void SelectPiece(GameObject piece)//new
+        public void SelectPiece(GameObject piece)
         {
             if (selectedPiece != null)
             {
@@ -99,37 +82,7 @@ namespace ChessGame
             selectedPiece = piece;
         }
 
-        public void MovePiece(GameObject clickedTile)//new
-        {
-            if (tilesToMove.Contains(clickedTile))
-            {
-                GameObject targetTile = tilesToMove.First(tile => tile == clickedTile);
-
-                GameObject tileToRemove = tiles[selectedPiece.transform.position];
-                selectedPiece.transform.position = targetTile.transform.position;
-
-                if(selectedPiece.GetComponent<Pawn>()!=null)
-                {
-                    selectedPiece.GetComponent<Pawn>().isMoved = true;
-                }
-
-                takenTilesDict.Remove(tileToRemove);
-                takenTilesDict.Add(targetTile, selectedPiece.GetComponent<ChessPiece>().colorType);
-
-                
-
-                //movenextplayer
-                //IsPlayerTurned = false;
-                if (selectedPiece.GetComponent<ChessPiece>().colorType == PieceColor.White)
-                    NextTurnColor = PieceColor.Black;
-                else
-                    NextTurnColor = PieceColor.White;
-
-                ClearMoveTiles();
-            }
-        }
-
-        private void TryToEat(GameObject piece)//new
+        private void TryToEat(GameObject piece)
         {
             GameObject tileUnderPiece = tiles[piece.transform.position];
 
@@ -141,7 +94,37 @@ namespace ChessGame
             }
         }
 
-        public void ClearMoveTiles()//new
+        public void MovePiece(GameObject clickedTile)
+        {
+            if (tilesToMove.Contains(clickedTile))
+            {
+                GameObject targetTile = tilesToMove.First(tile => tile == clickedTile);
+
+                GameObject tileToRemove = tiles[selectedPiece.transform.position];
+                selectedPiece.transform.position = targetTile.transform.position;
+
+                if (selectedPiece.GetComponent<Pawn>() != null)
+                {
+                    selectedPiece.GetComponent<Pawn>().isMoved = true;
+                }
+
+                takenTilesDict.Remove(tileToRemove);
+                takenTilesDict.Add(targetTile, selectedPiece.GetComponent<ChessPiece>().colorType);
+
+                if (selectedPiece.GetComponent<ChessPiece>().colorType == PieceColor.White)
+                    NextTurnColor = PieceColor.Black;
+                else
+                    NextTurnColor = PieceColor.White;
+
+                //ClearMoveTiles();
+            }
+            //else
+            //{
+            ClearMoveTiles();
+            //}
+        }
+
+        public void ClearMoveTiles()
         {
             selectedPiece = null;
             foreach (GameObject tile in tilesToMove)
@@ -149,11 +132,6 @@ namespace ChessGame
                 ChangeTileColor(tile, Color.white);
             }
             tilesToMove.Clear();
-        }
-
-        public void ChangeTileColor(GameObject tile, Color color)//new important
-        {
-            tile.GetComponent<Image>().color = color;
         }
 
         public bool IsPieceTheSameSide(GameObject tile, PieceColor pieceColor)
@@ -164,11 +142,6 @@ namespace ChessGame
             }
 
             return false;
-        }
-
-        public bool isPlayerTurned()
-        {
-            return true;
         }
     }
 }
