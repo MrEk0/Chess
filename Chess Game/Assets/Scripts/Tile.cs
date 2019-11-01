@@ -4,17 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Tile : MonoBehaviour, IPointerClickHandler/*, IPointerEnterHandler, IPointerExitHandler*/
+namespace ChessGame
 {
-    [SerializeField] Color selectedColor;
-
-    public bool IsTaken { get; set; } = false;
-    //public bool IsSelected { get; set; } = false;
-
-    public void OnPointerClick(PointerEventData eventData)
+    public class Tile : MonoBehaviour, IPointerClickHandler/*, IPointerEnterHandler, IPointerExitHandler*/
     {
-        //IsSelected = true;
-        TileManager.instance.TileToMove(gameObject);
-    }
+        [SerializeField] Color selectedColor;
 
+        public bool IsTaken { get; set; } = false;
+        //public bool IsSelected { get; set; } = false;
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            //IsSelected = true;
+            TileManager.instance.MovePiece(gameObject);
+        }
+
+    }
 }
