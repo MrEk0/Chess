@@ -17,11 +17,11 @@ namespace ChessGame
 
         private bool isPreviousTileTaken = false;
 
-        public override void OnPointerClick(PointerEventData eventData)
-        {
-            TileManager.instance.SelectPiece(gameObject);
-            ShowPossibleSteps();
-        }
+        //public override void OnPointerClick(PointerEventData eventData)
+        //{
+        //    TileManager.instance.SelectPiece(gameObject);
+        //    ShowPossibleSteps();
+        //}
 
         public override void ShowPossibleSteps()
         {

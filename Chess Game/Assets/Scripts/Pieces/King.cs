@@ -19,11 +19,11 @@ namespace ChessGame
             new Vector2Int(1,0),
        };
 
-        public override void OnPointerClick(PointerEventData eventData)
-        {
-            TileManager.instance.SelectPiece(gameObject);
-            ShowPossibleSteps();
-        }
+        //public override void OnPointerClick(PointerEventData eventData)
+        //{
+        //    TileManager.instance.SelectPiece(gameObject);
+        //    ShowPossibleSteps();
+        //}
 
         public override void ShowPossibleSteps()
         {

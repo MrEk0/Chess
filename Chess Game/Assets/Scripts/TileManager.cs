@@ -18,17 +18,22 @@ namespace ChessGame
         Dictionary<GameObject, PieceColor> takenTilesDict = new Dictionary<GameObject, PieceColor>();
 
         GameObject selectedPiece;
-        GameObject previousSelectedPiece;
-
-        public bool isPieceMoved { get; private set; } = false;
+        //GameObject previousSelectedPiece;
+        //PieceColor nextTurnColor;
 
         float height;
+
+        //public bool IsPlayerTurned { get; set; } = true;
+        public PieceColor NextTurnColor { get; set; } = PieceColor.White;
+
         private void Awake()
         {
             instance = this;
 
             height = tilePrefab.GetComponent<RectTransform>().rect.height;
             tilesToMove = new List<GameObject>();
+
+            //nextTurnColor = PieceColor.White;
         }
 
         public void AddTile(Vector3 position, GameObject tile)
@@ -87,7 +92,7 @@ namespace ChessGame
         {
             if (selectedPiece != null)
             {
-                EatPiece(piece);
+                TryToEat(piece);
                 ClearMoveTiles();
             }
 
@@ -103,32 +108,40 @@ namespace ChessGame
                 GameObject tileToRemove = tiles[selectedPiece.transform.position];
                 selectedPiece.transform.position = targetTile.transform.position;
 
-                //isPieceMoved();//
-                //isPieceMoved = true;
                 if(selectedPiece.GetComponent<Pawn>()!=null)
                 {
-                    selectedPiece.GetComponent<Pawn>().HasFirstCall = true;
+                    selectedPiece.GetComponent<Pawn>().isMoved = true;
                 }
 
                 takenTilesDict.Remove(tileToRemove);
                 takenTilesDict.Add(targetTile, selectedPiece.GetComponent<ChessPiece>().colorType);
 
+                
+
+                //movenextplayer
+                //IsPlayerTurned = false;
+                if (selectedPiece.GetComponent<ChessPiece>().colorType == PieceColor.White)
+                    NextTurnColor = PieceColor.Black;
+                else
+                    NextTurnColor = PieceColor.White;
+
                 ClearMoveTiles();
             }
         }
 
-        private void EatPiece(GameObject piece)//new
+        private void TryToEat(GameObject piece)//new
         {
             GameObject tileUnderPiece = tiles[piece.transform.position];
 
             if (tilesToMove.Contains(tileUnderPiece))
             {
+                takenTilesDict.Remove(tileUnderPiece);
                 Destroy(piece);
                 MovePiece(tileUnderPiece);
             }
         }
 
-        private void ClearMoveTiles()//new
+        public void ClearMoveTiles()//new
         {
             selectedPiece = null;
             foreach (GameObject tile in tilesToMove)
@@ -153,9 +166,9 @@ namespace ChessGame
             return false;
         }
 
-        //public bool isPieceMoved()
-        //{
-        //    return isMoved;
-        //}
+        public bool isPlayerTurned()
+        {
+            return true;
+        }
     }
 }

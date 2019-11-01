@@ -6,13 +6,12 @@ using UnityEngine.EventSystems;
 
 namespace ChessGame
 {
-    public class Pawn : ChessPiece/*, IPointerClickHandler*/
+    public class Pawn : ChessPiece
     {
-        public bool HasFirstCall { private get; set; } = false;
+        public bool isMoved { private get; set; } = false;
+
         Vector2Int[] moveVectors = new Vector2Int[4] { new Vector2Int(-1, 1), new Vector2Int(0,1),
             new Vector2Int(1,1), new Vector2Int(0,2) };
-
-        private bool isPreviousTileTaken = false;
 
         private void Awake()
         {
@@ -47,14 +46,13 @@ namespace ChessGame
 
         private void CheckDoubleForwardStep(GameObject tile)
         {
-            if (!HasFirstCall)
+            if (!isMoved)
             {
                 GameObject firstTile = TileManager.instance.GetStepTile(transform.position, moveVectors[1]);
 
                 if (!TileManager.instance.IsTileTaken(firstTile))
                 {
                     CheckForwardSteps(tile);
-                    //HasFirstCall = TileManager.instance.isPieceMoved();
                 }
             }
         }
@@ -92,10 +90,20 @@ namespace ChessGame
             }
         }
 
-        public override void OnPointerClick(PointerEventData eventData)
-        {
-            TileManager.instance.SelectPiece(gameObject);
-            ShowPossibleSteps();
-        }
+        //public override void OnPointerClick(PointerEventData eventData)
+        //{
+        //    //isSelected = !isSelected;
+        //    if (TileManager.instance.NextTurnColor==colorType)
+        //    {
+        //        //if it is not the same side
+        //        TileManager.instance.SelectPiece(gameObject);
+        //        ShowPossibleSteps();
+        //    }
+        //    //else
+        //    //{
+        //    //    TileManager.instance.ClearMoveTiles();
+        //    //}
+        //}
+  
     }
 }
