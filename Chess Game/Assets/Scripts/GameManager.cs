@@ -11,43 +11,48 @@ namespace ChessGame
         [SerializeField] GameObject darkTile = null;
         [SerializeField] RectTransform board = null;
         //[SerializeField] GameObject piece = null;
-
-        [SerializeField] List<GameObject> whitePieces = null;
-        [SerializeField] List<GameObject> blackPieces = null;
+        [Header("White Pieces")]
+        //[SerializeField] List<GameObject> whitePieces = null;
+        [SerializeField] GameObject w_KingPrefab = null;
+        [SerializeField] GameObject w_QueenPrefab = null;
+        [SerializeField] GameObject w_BishopPrefab = null;
+        [SerializeField] GameObject w_KnightPrefab = null;
+        [SerializeField] GameObject w_RookPrefab = null;
+        [SerializeField] GameObject w_PawnPrefab = null;
+        [Header("Black Pieces")]
+        [SerializeField] GameObject b_KingPrefab = null;
+        [SerializeField] GameObject b_QueenPrefab = null;
+        [SerializeField] GameObject b_BishopPrefab = null;
+        [SerializeField] GameObject b_KnightPrefab = null;
+        [SerializeField] GameObject b_RookPrefab = null;
+        [SerializeField] GameObject b_PawnPrefab = null;
 
         GameObject currentTile;
         float offset;
-        int numberOfRowColumn = 8;
+        int numberOfRowsAndColumns = 8;
 
-        List<GameObject> boardTiles;
-        //Dictionary<Vector3, GameObject> cells = new Dictionary<Vector3, GameObject>();//cells
-        TileManager tileManager;
+        //Dictionary<int, int> columnsAndRows = new Dictionary<int, int>();
+        //Dictionary<Dictionary<int, int>, Vector3> columnsPositions = new Dictionary<Dictionary<int, int>, Vector3>();
 
-        Dictionary<string, GameObject> whitePiecesDict = new Dictionary<string, GameObject>();
-        Dictionary<string, GameObject> blackPiecesDict = new Dictionary<string, GameObject>();
+        private List<Vector3> spawnPositions = new List<Vector3>();
 
         private void Awake()
         {
             offset = lightTile.GetComponent<RectTransform>().rect.height;
-            boardTiles = new List<GameObject>();
-            tileManager = FindObjectOfType<TileManager>();
-
         }
 
         // Start is called before the first frame update
         void Start()
         {
             CreateBoard();
-            SortPieces(whitePieces, whitePiecesDict);
-            SortPieces(blackPieces, blackPiecesDict);
             SetupPiece();
         }
 
-        private void CreateBoard()
+        private void CreateBoard()//ok
         {
-            for (int y = 0; y < numberOfRowColumn; y++)
+            for (int y = 0; y < numberOfRowsAndColumns; y++)
             {
-                for (int x = 0; x < numberOfRowColumn; x++)
+                for (int x = 0; x < numberOfRowsAndColumns; x++)
                 {
                     if ((x + y) % 2 == 0)
                     {
@@ -60,103 +65,78 @@ namespace ChessGame
 
                     Vector3 spawnPosition = new Vector3(board.position.x + offset * x, board.position.y + offset * y);
                     GameObject boardTile = Instantiate(currentTile, spawnPosition, Quaternion.identity, board);
+                    spawnPositions.Add(spawnPosition);
 
-                    boardTiles.Add(boardTile);
-                    tileManager.AddTile(spawnPosition, boardTile);
-                    //cells.Add(spawnPosition, boardTile);
+                    TileManager.instance.AddTile(spawnPosition, boardTile);
                 }
             }
         }
 
         private void SetupPiece()
         {
-            Vector3[] tilePositions = tileManager.GetTilePositions();
-
-            for (int i=0; i<2*numberOfRowColumn; i++)
+            for (int i = 0; i < 2 * numberOfRowsAndColumns; i++)
             {
-                InstallPiecesOnBoard(i, whitePiecesDict, tilePositions[i]);
-                tileManager.SetTileTaken(tilePositions[i]);
+                //TileManager.instance.AddTakenTile(spawnPositions[i]);//old
+                TileManager.instance.AddTileTaken(spawnPositions[i], PieceColor.White);
+
+                switch (i)
+                {
+                    case 0:
+                    case 7:
+                        Instantiate(w_RookPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    case 1:
+                    case 6:
+                        Instantiate(w_KnightPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    case 2:
+                    case 5:
+                        Instantiate(w_BishopPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    case 3:
+                        Instantiate(w_QueenPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    case 4:
+                        Instantiate(w_KingPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    default:
+                        Instantiate(w_PawnPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                }
             }
-          
 
-            for (int i = 0; i < numberOfRowColumn; i++)
+            int startNumberForBlack = spawnPositions.Count - 2 * numberOfRowsAndColumns;
+
+            for (int i = startNumberForBlack; i < spawnPositions.Count; i++)
             {
-                InstallPiecesOnBoard(i, blackPiecesDict, tilePositions[tilePositions.Length - numberOfRowColumn + i]);
-                tileManager.SetTileTaken(tilePositions[tilePositions.Length - numberOfRowColumn + i]);
-            }
+                //TileManager.instance.AddTakenTile(spawnPositions[i]);//old
+                TileManager.instance.AddTileTaken(spawnPositions[i], PieceColor.Black);
 
-            for (int i = 0; i < numberOfRowColumn; i++)
-            {
-                InstallPiecesOnBoard(i + numberOfRowColumn, blackPiecesDict,
-                    tilePositions[tilePositions.Length - 2*numberOfRowColumn + i]);
-                tileManager.SetTileTaken(tilePositions[tilePositions.Length - 2 * numberOfRowColumn + i]);
-            }
-        }
-
-        private void InstallPiecesOnBoard(int positionIndex, Dictionary<string, GameObject> pieceDict, Vector3 installPos)
-        {
-            switch (positionIndex)
-            {
-                case 0:
-                case 7:
-                    Instantiate(pieceDict["Rook"], installPos, Quaternion.identity, board);
-                    break;
-                case 1:
-                case 6:
-                    Instantiate(pieceDict["Knight"], installPos, Quaternion.identity, board);
-                    break;
-                case 2:
-                case 5:
-                    Instantiate(pieceDict["Bishop"], installPos, Quaternion.identity, board);
-                    break;
-                case 3:
-                    Instantiate(pieceDict["Queen"], installPos, Quaternion.identity, board);
-                    break;
-                case 4:
-                    Instantiate(pieceDict["King"], installPos, Quaternion.identity, board);
-                    break;
-                default:
-                    Instantiate(pieceDict["Pawn"], installPos, Quaternion.identity, board);
-                    break;
-            }
-        }
-
-        private void SortPieces(List<GameObject> listOfPieces, Dictionary<string, GameObject> sortedList)
-        {
-            foreach (GameObject obj in listOfPieces)
-            {
-                string name = obj.name;
-
-                if (name.Contains("Pawn"))
+                switch (i)
                 {
-                    sortedList.Add("Pawn", obj);
-                }
-                else if (name.Contains("King"))
-                {
-                    sortedList.Add("King", obj);
-                }
-                else if (name.Contains("Queen"))
-                {
-                    sortedList.Add("Queen", obj);
-                }
-                else if (name.Contains("Bishop"))
-                {
-                    sortedList.Add("Bishop", obj);
-                }
-                else if (name.Contains("Rook"))
-                {
-                    sortedList.Add("Rook", obj);
-                }
-                else if (name.Contains("Knight"))
-                {
-                    sortedList.Add("Knight", obj);
+                    case 63:
+                    case 56:
+                        Instantiate(b_RookPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    case 62:
+                    case 57:
+                        Instantiate(b_KnightPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    case 61:
+                    case 58:
+                        Instantiate(b_BishopPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    case 59:
+                        Instantiate(b_QueenPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    case 60:
+                        Instantiate(b_KingPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
+                    default:
+                        Instantiate(b_PawnPrefab, spawnPositions[i], Quaternion.identity, board);
+                        break;
                 }
             }
         }
-
-        //public Dictionary<Vector3, GameObject> GetCells()
-        //{
-        //    return cells;
-        //}
     }
 }
