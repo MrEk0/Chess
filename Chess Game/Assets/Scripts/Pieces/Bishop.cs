@@ -19,8 +19,6 @@ namespace ChessGame
 
         public override void ShowPossibleSteps()
         {
-            //List<Vector2Int> moveVectorsList = new List<Vector2Int>();
-
             for (int i = 0; i < moveVectors.Length; i++)
             {
                 for (int j = 1; j < 9; j++)

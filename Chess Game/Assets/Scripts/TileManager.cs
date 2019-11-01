@@ -17,6 +17,8 @@ namespace ChessGame
         List<GameObject> tilesToMove;     
         GameObject selectedPiece;
 
+        GameObject previousSelected;
+
         float height;
 
         public PieceColor NextTurnColor { get; set; } = PieceColor.White;
@@ -80,6 +82,7 @@ namespace ChessGame
             }
 
             selectedPiece = piece;
+            ChangeTurn();
         }
 
         private void TryToEat(GameObject piece)
@@ -111,17 +114,21 @@ namespace ChessGame
                 takenTilesDict.Remove(tileToRemove);
                 takenTilesDict.Add(targetTile, selectedPiece.GetComponent<ChessPiece>().colorType);
 
-                if (selectedPiece.GetComponent<ChessPiece>().colorType == PieceColor.White)
-                    NextTurnColor = PieceColor.Black;
-                else
-                    NextTurnColor = PieceColor.White;
-
-                //ClearMoveTiles();
+                previousSelected = selectedPiece;
             }
-            //else
-            //{
+
             ClearMoveTiles();
-            //}
+        }
+
+        private void ChangeTurn()
+        {
+            if (previousSelected != null)
+            {
+                if (previousSelected.tag == selectedPiece.tag)
+                {
+                    ClearMoveTiles();
+                }
+            }
         }
 
         public void ClearMoveTiles()

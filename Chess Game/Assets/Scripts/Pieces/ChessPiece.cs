@@ -7,27 +7,22 @@ namespace ChessGame
 {
     public enum PieceColor
     {
-        White, Black /*King, Queen, Bishop, Knight, Rook, Pawn*/
+        White, Black
     };
 
-    public abstract class ChessPiece : MonoBehaviour, IPointerClickHandler /*: EventTrigger*/
+    public abstract class ChessPiece : MonoBehaviour, IPointerClickHandler
     {
         public PieceColor colorType;
 
         protected bool isSelected = false;
-        //protected Vector2Int[] moveVectors;
         public abstract void ShowPossibleSteps();
 
         public abstract void CheckAttackSteps(GameObject tile);
 
         public virtual void OnPointerClick(PointerEventData eventData)
         {
-            if (TileManager.instance.NextTurnColor == colorType)
-            {
-                //if it is not the same side
-                TileManager.instance.SelectPiece(gameObject);
-                ShowPossibleSteps();
-            }
+            ShowPossibleSteps();
+            TileManager.instance.SelectPiece(gameObject);
         }
         
     }

@@ -6,16 +6,10 @@ using UnityEngine.EventSystems;
 
 namespace ChessGame
 {
-    public class Tile : MonoBehaviour, IPointerClickHandler/*, IPointerEnterHandler, IPointerExitHandler*/
+    public class Tile : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] Color selectedColor;
-
-        public bool IsTaken { get; set; } = false;
-        //public bool IsSelected { get; set; } = false;
-
         public void OnPointerClick(PointerEventData eventData)
         {
-            //IsSelected = true;
             TileManager.instance.MovePiece(gameObject);
         }
 
