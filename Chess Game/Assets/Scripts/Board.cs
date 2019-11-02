@@ -9,7 +9,7 @@ namespace ChessGame
     {
         [SerializeField] GameObject lightTile = null;
         [SerializeField] GameObject darkTile = null;
-        [SerializeField] RectTransform board = null;
+        [SerializeField] float timeToSpawn = 0.3f;
 
         [Header("White Pieces")]
         [SerializeField] GameObject w_KingPrefab = null;
@@ -43,7 +43,8 @@ namespace ChessGame
         void Start()
         {
             CreateBoard();
-            SetupPiece();
+            StartCoroutine(SetUpWhitePieces());
+            StartCoroutine(SetUpBlackPieces());
         }
 
         private void CreateBoard()
@@ -61,8 +62,8 @@ namespace ChessGame
                         currentTile = lightTile;
                     }
 
-                    Vector3 spawnPosition = new Vector3(board.position.x + offset * x, board.position.y + offset * y);
-                    GameObject boardTile = Instantiate(currentTile, spawnPosition, Quaternion.identity, board);
+                    Vector3 spawnPosition = new Vector3(transform.position.x + offset * x, transform.position.y + offset * y);
+                    GameObject boardTile = Instantiate(currentTile, spawnPosition, Quaternion.identity, transform);
                     spawnPositions.Add(spawnPosition);
 
                     TileManager.instance.AddTile(spawnPosition, boardTile);
@@ -70,70 +71,76 @@ namespace ChessGame
             }
         }
 
-        private void SetupPiece()
+        private IEnumerator SetUpWhitePieces()
         {
-            //white pieces
             for (int i = 0; i < 2 * numberOfRowsAndColumns; i++)
             {
                 TileManager.instance.AddTakenTile(spawnPositions[i], PieceColor.White);
+                yield return new WaitForSeconds(timeToSpawn);
 
                 switch (i)
                 {
                     case 0:
                     case 7:
-                        Instantiate(w_RookPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(w_RookPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 1:
                     case 6:
-                        Instantiate(w_KnightPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(w_KnightPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 2:
                     case 5:
-                        Instantiate(w_BishopPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(w_BishopPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 3:
-                        Instantiate(w_QueenPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(w_QueenPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 4:
-                        Instantiate(w_KingPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(w_KingPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     default:
-                        Instantiate(w_PawnPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(w_PawnPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                 }
             }
+        }
 
+        private IEnumerator SetUpBlackPieces()
+        {
             int startNumberForBlack = spawnPositions.Count - 2 * numberOfRowsAndColumns;
-            //black pieces
+
             for (int i = startNumberForBlack; i < spawnPositions.Count; i++)
             {
                 TileManager.instance.AddTakenTile(spawnPositions[i], PieceColor.Black);
+                yield return new WaitForSeconds(timeToSpawn);
 
                 switch (i)
                 {
                     case 63:
                     case 56:
-                        Instantiate(b_RookPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(b_RookPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 62:
                     case 57:
-                        Instantiate(b_KnightPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(b_KnightPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 61:
                     case 58:
-                        Instantiate(b_BishopPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(b_BishopPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 59:
-                        Instantiate(b_QueenPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(b_QueenPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 60:
-                        Instantiate(b_KingPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(b_KingPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     default:
-                        Instantiate(b_PawnPrefab, spawnPositions[i], Quaternion.identity, board);
+                        Instantiate(b_PawnPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                 }
             }
         }
+
+
     }
 }
