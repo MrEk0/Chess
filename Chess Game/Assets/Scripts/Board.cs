@@ -72,6 +72,7 @@ namespace ChessGame
 
         private void SetupPiece()
         {
+            //white pieces
             for (int i = 0; i < 2 * numberOfRowsAndColumns; i++)
             {
                 TileManager.instance.AddTakenTile(spawnPositions[i], PieceColor.White);
@@ -103,7 +104,7 @@ namespace ChessGame
             }
 
             int startNumberForBlack = spawnPositions.Count - 2 * numberOfRowsAndColumns;
-
+            //black pieces
             for (int i = startNumberForBlack; i < spawnPositions.Count; i++)
             {
                 TileManager.instance.AddTakenTile(spawnPositions[i], PieceColor.Black);

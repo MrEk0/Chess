@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,12 +17,13 @@ namespace ChessGame
         Dictionary<GameObject, PieceColor> takenTilesDict = new Dictionary<GameObject, PieceColor>();
         List<GameObject> tilesToMove;     
         GameObject selectedPiece;
-
         GameObject previousSelected;
 
         float height;
 
-        public PieceColor NextTurnColor { get; set; } = PieceColor.White;
+        public event Action OnKingDead;
+
+        //public PieceColor NextTurnColor { get; set; } = PieceColor.White;
 
         private void Awake()
         {
@@ -92,9 +94,19 @@ namespace ChessGame
             if (tilesToMove.Contains(tileUnderPiece))
             {
                 takenTilesDict.Remove(tileUnderPiece);
-                Destroy(piece);
+
+                DestroyThePiece(piece);
                 MovePiece(tileUnderPiece);
             }
+        }
+
+        private void DestroyThePiece(GameObject piece)
+        {
+            if (piece.name.Contains("King"))
+            {
+                OnKingDead();
+            }
+            Destroy(piece);
         }
 
         public void MovePiece(GameObject clickedTile)
@@ -114,7 +126,7 @@ namespace ChessGame
                 takenTilesDict.Remove(tileToRemove);
                 takenTilesDict.Add(targetTile, selectedPiece.GetComponent<ChessPiece>().colorType);
 
-                previousSelected = selectedPiece;
+                previousSelected = selectedPiece;//to change player's turn
             }
 
             ClearMoveTiles();
