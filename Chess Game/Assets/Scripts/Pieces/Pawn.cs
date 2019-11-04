@@ -32,7 +32,7 @@ namespace ChessGame
 
                 if(tile==null)
                 {
-                    return;
+                    continue;
                 }
 
                 if(i==0 || i==2)

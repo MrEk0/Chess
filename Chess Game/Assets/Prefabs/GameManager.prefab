@@ -40,7 +40,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8063216723140167679}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61b8917eee09df543aedc17723f48a4b, type: 3}
   m_Name: 
@@ -49,7 +49,7 @@ MonoBehaviour:
     type: 3}
   darkTile: {fileID: 3888199778835811125, guid: 872847eb830ba794cbd9a0543963e8d4,
     type: 3}
-  board: {fileID: 0}
+  timeToSpawn: 0.3
   w_KingPrefab: {fileID: 4610155544592262047, guid: 88eb1d0570757ca499828329d26e4af1,
     type: 3}
   w_QueenPrefab: {fileID: 4610155544592262047, guid: bdf5c347428932c46b433e65e277eb96,
@@ -103,3 +103,5 @@ MonoBehaviour:
   canvas: {fileID: 0}
   gameOverPanel: {fileID: 2873352274396346806, guid: 037616c20462e57458866c4ebe03cac5,
     type: 3}
+  nextTurnPanel: {fileID: 0}
+  timeForNextTurnPanel: 0.5

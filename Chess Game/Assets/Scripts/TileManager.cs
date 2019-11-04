@@ -12,16 +12,18 @@ namespace ChessGame
         public static TileManager instance;
 
         [SerializeField] GameObject tilePrefab = null;
-
-        Dictionary<Vector3, GameObject> tiles = new Dictionary<Vector3, GameObject>();
-        Dictionary<GameObject, PieceColor> takenTilesDict = new Dictionary<GameObject, PieceColor>();
+        //tiles 
+        Dictionary<Vector3, GameObject> tiles /*= new Dictionary<Vector3, GameObject>()*/;
+        Dictionary<GameObject, PieceColor> takenTilesDict /*= new Dictionary<GameObject, PieceColor>()*/;
         List<GameObject> tilesToMove;     
         GameObject selectedPiece;
         GameObject previousSelected;
 
+        //tile height
         float height;
-
+        //events
         public event Action OnKingDead;
+        public event Action<string> OnPieceMoved;
 
         //public PieceColor NextTurnColor { get; set; } = PieceColor.White;
 
@@ -30,6 +32,8 @@ namespace ChessGame
             instance = this;
 
             height = tilePrefab.GetComponent<RectTransform>().rect.height;
+            tiles = new Dictionary<Vector3, GameObject>();
+            takenTilesDict = new Dictionary<GameObject, PieceColor>();
             tilesToMove = new List<GameObject>();
         }
 
@@ -77,6 +81,12 @@ namespace ChessGame
 
         public void SelectPiece(GameObject piece)
         {
+            if(piece.GetComponent<ChessPiece>().colorType!=PieceColor.White && previousSelected==null)
+            {
+                ClearMoveTiles();
+                return;
+            }
+
             if (selectedPiece != null)
             {
                 TryToEat(piece);
@@ -84,6 +94,7 @@ namespace ChessGame
             }
 
             selectedPiece = piece;
+
             ChangeTurn();
         }
 
@@ -127,6 +138,8 @@ namespace ChessGame
                 takenTilesDict.Add(targetTile, selectedPiece.GetComponent<ChessPiece>().colorType);
 
                 previousSelected = selectedPiece;//to change player's turn
+
+                OnPieceMoved(selectedPiece.tag);
             }
 
             ClearMoveTiles();
