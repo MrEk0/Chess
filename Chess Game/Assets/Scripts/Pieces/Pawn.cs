@@ -28,7 +28,7 @@ namespace ChessGame
         {
             for(int i=0; i<moveVectors.Length; i++)
             {
-                GameObject tile = TileManager.instance.GetStepTile(transform.position, moveVectors[i]);
+                GameObject tile = TileManager.instance.GetStepTile(transform.localPosition, moveVectors[i]);
 
                 if(tile==null)
                 {
@@ -54,7 +54,7 @@ namespace ChessGame
         {
             if (!isMoved)
             {
-                GameObject firstTile = TileManager.instance.GetStepTile(transform.position, moveVectors[1]);
+                GameObject firstTile = TileManager.instance.GetStepTile(transform.localPosition, moveVectors[1]);
 
                 if (!TileManager.instance.IsTileTaken(firstTile))
                 {

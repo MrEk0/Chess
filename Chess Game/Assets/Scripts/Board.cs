@@ -9,6 +9,7 @@ namespace ChessGame
     {
         [SerializeField] GameObject lightTile = null;
         [SerializeField] GameObject darkTile = null;
+        [SerializeField] RectTransform startPos = null;//fdsfsf
         [SerializeField] float timeToSpawn = 0.3f;
 
         [Header("White Pieces")]
@@ -28,6 +29,8 @@ namespace ChessGame
         [SerializeField] GameObject b_PawnPrefab = null;
 
         GameObject currentTile;
+        RectTransform rectTransform;//new
+        Canvas canvas;
         float offset;
         int numberOfRowsAndColumns = 8;
 
@@ -36,7 +39,9 @@ namespace ChessGame
         private void Awake()
         {
             offset = lightTile.GetComponent<RectTransform>().rect.height;
+            rectTransform = GetComponent<RectTransform>();
             spawnPositions = new List<Vector3>();
+            canvas = GetComponentInParent<Canvas>();//new
         }
 
         // Start is called before the first frame update
@@ -62,8 +67,14 @@ namespace ChessGame
                         currentTile = lightTile;
                     }
 
-                    Vector3 spawnPosition = new Vector3(transform.position.x + offset * x, transform.position.y + offset * y);
-                    GameObject boardTile = Instantiate(currentTile, spawnPosition, Quaternion.identity, transform);
+                    //Vector3 spawnPosition = new Vector3(startPos.position.x + offset * x, startPos.position.y + offset * y);
+                    Vector3 spawnPosition = new Vector3(startPos.localPosition.x + offset * x,
+                        startPos.localPosition.y + offset * y);//
+                    //print(spawnPosition);
+                    GameObject boardTile = Instantiate(currentTile, spawnPosition, Quaternion.identity/*, rectTransform*/);
+                    boardTile.transform.SetParent(transform, false);
+                    
+                    //boardTile.transform.localPosition = spawnPosition;//
                     spawnPositions.Add(spawnPosition);
 
                     TileManager.instance.AddTile(spawnPosition, boardTile);
@@ -73,6 +84,8 @@ namespace ChessGame
 
         private IEnumerator SetUpWhitePieces()
         {
+            GameObject chessPiece;
+
             for (int i = 0; i < 2 * numberOfRowsAndColumns; i++)
             {
                 TileManager.instance.AddTakenTile(spawnPositions[i], PieceColor.White);
@@ -82,32 +95,35 @@ namespace ChessGame
                 {
                     case 0:
                     case 7:
-                        Instantiate(w_RookPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece=Instantiate(w_RookPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 1:
                     case 6:
-                        Instantiate(w_KnightPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece = Instantiate(w_KnightPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 2:
                     case 5:
-                        Instantiate(w_BishopPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece = Instantiate(w_BishopPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 3:
-                        Instantiate(w_QueenPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece = Instantiate(w_QueenPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 4:
-                        Instantiate(w_KingPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece = Instantiate(w_KingPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     default:
-                        Instantiate(w_PawnPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece = Instantiate(w_PawnPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                 }
+                //chessPiece.transform.SetParent(transform, false);
+                chessPiece.transform.localPosition = spawnPositions[i];
             }
         }
 
         private IEnumerator SetUpBlackPieces()
         {
             int startNumberForBlack = spawnPositions.Count - 2 * numberOfRowsAndColumns;
+            GameObject chessPiece;
 
             for (int i = startNumberForBlack; i < spawnPositions.Count; i++)
             {
@@ -118,26 +134,27 @@ namespace ChessGame
                 {
                     case 63:
                     case 56:
-                        Instantiate(b_RookPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece=Instantiate(b_RookPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 62:
                     case 57:
-                        Instantiate(b_KnightPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece=Instantiate(b_KnightPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 61:
                     case 58:
-                        Instantiate(b_BishopPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece=Instantiate(b_BishopPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 59:
-                        Instantiate(b_QueenPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece=Instantiate(b_QueenPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     case 60:
-                        Instantiate(b_KingPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece=Instantiate(b_KingPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                     default:
-                        Instantiate(b_PawnPrefab, spawnPositions[i], Quaternion.identity, transform);
+                        chessPiece=Instantiate(b_PawnPrefab, spawnPositions[i], Quaternion.identity, transform);
                         break;
                 }
+                chessPiece.transform.localPosition = spawnPositions[i];
             }
         }
 

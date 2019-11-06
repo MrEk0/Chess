@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8063216723140167673}
-  - component: {fileID: 8063216723140167678}
   - component: {fileID: 8063216723140167672}
   - component: {fileID: 2613180228987760396}
   m_Layer: 0
@@ -33,47 +32,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8063216723140167678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8063216723140167679}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61b8917eee09df543aedc17723f48a4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lightTile: {fileID: 4610155544592262047, guid: 5e6981710cac58740a7d2f2bc37d0278,
-    type: 3}
-  darkTile: {fileID: 3888199778835811125, guid: 872847eb830ba794cbd9a0543963e8d4,
-    type: 3}
-  timeToSpawn: 0.3
-  w_KingPrefab: {fileID: 4610155544592262047, guid: 88eb1d0570757ca499828329d26e4af1,
-    type: 3}
-  w_QueenPrefab: {fileID: 4610155544592262047, guid: bdf5c347428932c46b433e65e277eb96,
-    type: 3}
-  w_BishopPrefab: {fileID: 4610155544592262047, guid: 35f674e73fe855641b2a6799bdba740a,
-    type: 3}
-  w_KnightPrefab: {fileID: 4610155544592262047, guid: 5211bf8ba955106479f98236b5da67fc,
-    type: 3}
-  w_RookPrefab: {fileID: 4610155544592262047, guid: 70a0c7b0fd95e3c4097b51498ce2a179,
-    type: 3}
-  w_PawnPrefab: {fileID: 4610155544592262047, guid: e3ebf47e487fc834c83a9d1027efb6f6,
-    type: 3}
-  b_KingPrefab: {fileID: 4610155544592262047, guid: 924d82058e285ed48b337644bab54768,
-    type: 3}
-  b_QueenPrefab: {fileID: 4610155544592262047, guid: 33adbadade14b7b4b885fea2b3439c61,
-    type: 3}
-  b_BishopPrefab: {fileID: 4610155544592262047, guid: 85dd782dc72225542a08e976b36ff678,
-    type: 3}
-  b_KnightPrefab: {fileID: 4610155544592262047, guid: 4fc4e5734aa04aa419ae1a8ae9f44ffa,
-    type: 3}
-  b_RookPrefab: {fileID: 4610155544592262047, guid: bd04ac37fe28a7446a7bbf2760c6094c,
-    type: 3}
-  b_PawnPrefab: {fileID: 4610155544592262047, guid: b15e68907e119264bb50e3b1807d0bc3,
-    type: 3}
 --- !u!114 &8063216723140167672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -101,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 0}
-  gameOverPanel: {fileID: 2873352274396346806, guid: 037616c20462e57458866c4ebe03cac5,
+  gameOverPanel: {fileID: 4170802297521142585, guid: 037616c20462e57458866c4ebe03cac5,
     type: 3}
   nextTurnPanel: {fileID: 0}
-  timeForNextTurnPanel: 0.5
+  timeForNextTurnPanel: 1

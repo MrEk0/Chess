@@ -100,7 +100,7 @@ namespace ChessGame
 
         private void TryToEat(GameObject piece)
         {
-            GameObject tileUnderPiece = tiles[piece.transform.position];
+            GameObject tileUnderPiece = tiles[piece.transform.localPosition];
 
             if (tilesToMove.Contains(tileUnderPiece))
             {
@@ -126,8 +126,8 @@ namespace ChessGame
             {
                 GameObject targetTile = tilesToMove.First(tile => tile == clickedTile);
 
-                GameObject tileToRemove = tiles[selectedPiece.transform.position];
-                selectedPiece.transform.position = targetTile.transform.position;
+                GameObject tileToRemove = tiles[selectedPiece.transform.localPosition];
+                selectedPiece.transform.localPosition = targetTile.transform.localPosition;
 
                 if (selectedPiece.GetComponent<Pawn>() != null)
                 {

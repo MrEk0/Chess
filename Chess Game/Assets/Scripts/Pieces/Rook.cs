@@ -24,7 +24,7 @@ namespace ChessGame
             {
                 for (int j = 1; j < 9; j++)
                 {
-                    GameObject tile = TileManager.instance.GetStepTile(transform.position, moveVectors[i]*j);
+                    GameObject tile = TileManager.instance.GetStepTile(transform.localPosition, moveVectors[i]*j);
 
                     if (tile != null)
                     {

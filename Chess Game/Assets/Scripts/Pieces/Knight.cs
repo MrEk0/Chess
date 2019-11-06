@@ -23,7 +23,7 @@ namespace ChessGame
         {
             for (int i = 0; i < moveVectors.Length; i++)
             {
-                GameObject tile = TileManager.instance.GetStepTile(transform.position, moveVectors[i]);
+                GameObject tile = TileManager.instance.GetStepTile(transform.localPosition, moveVectors[i]);
                 if (tile != null)
                 {
                     CheckAttackSteps(tile);
